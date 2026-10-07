@@ -164,6 +164,40 @@ footer span{color:var(--gold)}
 .toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,30px);z-index:100;background:#111;border:1px solid rgba(215,180,106,.35);padding:13px 18px;border-radius:8px;color:#ddd;font-size:10px;opacity:0;pointer-events:none;transition:.3s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* MODAL DE PRODUCTO */
+.product-img{cursor:pointer}
+.quick{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;background:rgba(5,5,5,.85);border:1px solid rgba(215,180,106,.4);color:var(--gold);padding:8px 14px;border-radius:30px;font-size:9px;letter-spacing:2px;transition:.3s;pointer-events:none;white-space:nowrap}
+.product:hover .quick{opacity:1;transform:translate(-50%,0)}
+.name-link{background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.name-link:hover{color:var(--gold)}
+.name-link:focus-visible,.pm-close:focus-visible,.pm-nav:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.pm-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(6px);z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.3s}
+.pm-backdrop.open{opacity:1;pointer-events:auto}
+.pm{position:relative;width:min(1040px,100%);max-height:92vh;overflow:auto;display:grid;grid-template-columns:1.2fr .8fr;background:#0b0b0b;border:1px solid rgba(215,180,106,.25);border-radius:18px;transform:translateY(16px) scale(.98);transition:.35s}
+.pm-backdrop.open .pm{transform:none}
+.pm-media{position:relative;min-height:580px;overflow:hidden;background:radial-gradient(circle at 50% 40%,rgba(215,180,106,.14),transparent 60%),#090909}
+.pm-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:zoom-in;transition:transform .3s}
+.pm-media img.zoom{transform:scale(2);cursor:zoom-out}
+.pm-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:9px;letter-spacing:2px;color:#ccc;background:rgba(5,5,5,.7);padding:7px 12px;border-radius:30px;pointer-events:none;white-space:nowrap}
+.pm-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(5,5,5,.75);color:#fff;font-size:24px;cursor:pointer;z-index:2;transition:.25s}
+.pm-nav:hover{border-color:var(--gold);color:var(--gold)}
+.pm-prev{left:14px}.pm-next{right:14px}
+.pm-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(5,5,5,.8);color:#fff;font-size:22px;cursor:pointer;z-index:3}
+.pm-close:hover{border-color:var(--gold);color:var(--gold)}
+.pm-body{padding:48px 36px 36px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.pm-body h3{font-family:"Cormorant Garamond",serif;font-size:clamp(32px,3.4vw,44px);line-height:1.05;font-weight:600}
+.pm-body .price{font-size:26px;margin:0}
+.pm-desc{color:#aaa;font-size:13px;line-height:1.9}
+.pm-list{list-style:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;display:grid;gap:8px;font-size:11px;color:#999}
+.pm-body .btn{width:100%}
+@media(max-width:900px){.nav-links.mobile-open{display:flex;flex-direction:column;gap:18px;position:absolute;top:100%;left:0;right:0;padding:22px 6%;background:rgba(5,5,5,.97);border-bottom:1px solid var(--line)}}
+@media(max-width:760px){
+  .pm{grid-template-columns:1fr}
+  .pm-media{min-height:0;height:min(100vw,440px)}
+  .pm-body{padding:24px 22px 28px}
+}
+@media(prefers-reduced-motion:reduce){.pm,.pm-backdrop,.pm-media img,.quick{transition:none}}
+
 /* MOBILE */
 @media(max-width:900px){
   .nav-links{display:none}.menu-btn{display:grid}
@@ -386,6 +420,31 @@ footer span{color:var(--gold)}
   </div>
 </aside>
 
+<div class="pm-backdrop" id="pmBackdrop" onclick="if(event.target===this)closeProduct()">
+  <div class="pm" role="dialog" aria-modal="true" aria-labelledby="pmName">
+    <button class="pm-close" id="pmClose" onclick="closeProduct()" aria-label="Cerrar">×</button>
+    <div class="pm-media">
+      <img id="pmImg" src="" alt="">
+      <span class="badge" id="pmBadge"></span>
+      <button class="pm-nav pm-prev" onclick="stepProduct(-1)" aria-label="Gorra anterior">‹</button>
+      <button class="pm-nav pm-next" onclick="stepProduct(1)" aria-label="Gorra siguiente">›</button>
+      <span class="pm-hint">TOCA LA IMAGEN PARA ACERCAR</span>
+    </div>
+    <div class="pm-body">
+      <div class="product-cat">CAPS DELUXE · <span id="pmCount"></span></div>
+      <h3 id="pmName"></h3>
+      <div class="price" id="pmPrice"></div>
+      <p class="pm-desc" id="pmDesc"></p>
+      <ul class="pm-list">
+        <li>🚚 Envío a todo Colombia · domicilio $5.000</li>
+        <li>🔒 Pago seguro con PSE, Nequi y tarjetas</li>
+      </ul>
+      <button class="btn btn-gold" id="pmAdd">AGREGAR AL CARRITO</button>
+      <a class="btn btn-dark" id="pmWa" href="#" target="_blank" rel="noopener">💬 PREGUNTAR POR WHATSAPP</a>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Widget oficial de Checkout de Wompi -->
@@ -394,26 +453,28 @@ footer span{color:var(--gold)}
 const SHIPPING_FEE = 5000;
 
 // ================== CONFIGURACIÓN WOMPI ==================
-// Llaves en: Wompi → Desarrolladores → Llaves y secretos (sandbox: pub_test_..., producción: pub_prod_...)
-const WOMPI_PUBLIC_KEY = "pub_prod_RkVodQKUbQ741AC7yWJEKkPFCk4nlXQH"; // Reemplazar por tu llave pública
+// La llave PÚBLICA sí puede estar en el sitio. El secreto de integridad NO: vive solo en el servidor (api/firma.js).
+const WOMPI_PUBLIC_KEY = "pub_prod_RkVodQKUbQ741AC7yWJEKkPFCk4nlXQH";
 
-// Secreto de integridad (Wompi → Desarrolladores → "Secreto de integridad").
-// OJO: lo ideal es firmar en tu servidor (ver SIGNATURE_ENDPOINT). Déjalo vacío si usas servidor.
-const WOMPI_INTEGRITY_SECRET = "prod_integrity_qlhawOKbsXTgxms8I4oOvJe1qPdDAHKy"; // Debe ser prod_integrity_... si tu llave es pub_prod_ (o test_integrity_... si es pub_test_)
-
-// Opcional: URL de tu backend que reciba {reference, amountInCents, currency} y responda {signature}
-const SIGNATURE_ENDPOINT = "";
+// URL de tu función en Vercel. Recibe los productos y devuelve el monto y la firma.
+const SIGNATURE_ENDPOINT = "https://TU-PROYECTO.vercel.app/api/firma";
 
 const CURRENCY = "COP";
 // =========================================================
 
 const products = [
-  {id:1, name:"Caps Deluxe Supreme White", price:70000, type:"best", label:"MÁS VENDIDA", img:"caps1.jpeg"},
-  {id:2, name:"Caps Deluxe Cross Black", price:70000, type:"new", label:"NUEVA", img:"caps2.jpeg"},
-  {id:3, name:"Caps Deluxe Hugo Red", price:70000, type:"best", label:"DESTACADA", img:"caps3.jpeg"},
-  {id:4, name:"Caps Deluxe 777 Gold", price:70000, type:"sale", label:"OFERTA", img:"caps4.jpeg"},
-  {id:5, name:"Caps Deluxe Monogram White", price:70000, type:"new", label:"NUEVA", img:"caps5.jpeg"},
-  {id:6, name:"Caps Deluxe Cross Suede", price:70000, type:"best", label:"MÁS VENDIDA", img:"caps6.jpeg"}
+  {id:1, name:"Caps Deluxe Supreme White", price:70000, type:"best", label:"MÁS VENDIDA", img:"caps1.jpeg",
+   desc:"Blanca, limpia y con carácter. Una gorra que combina con todo y le da un toque fresco a cualquier outfit, de día o de noche."},
+  {id:2, name:"Caps Deluxe Cross Black", price:70000, type:"new", label:"NUEVA", img:"caps2.jpeg",
+   desc:"Negra con detalle de cruz. Sobria y con presencia: la que no falla cuando buscas un look urbano y elegante."},
+  {id:3, name:"Caps Deluxe Hugo Red", price:70000, type:"best", label:"DESTACADA", img:"caps3.jpeg",
+   desc:"Roja intensa que se hace notar. Pensada para quien quiere un accesorio protagonista y con mucha personalidad."},
+  {id:4, name:"Caps Deluxe 777 Gold", price:70000, type:"sale", label:"OFERTA", img:"caps4.jpeg",
+   desc:"El 777 en dorado como sello de la casa. Un diseño hecho para brillar y marcar la diferencia."},
+  {id:5, name:"Caps Deluxe Monogram White", price:70000, type:"new", label:"NUEVA", img:"caps5.jpeg",
+   desc:"Blanca con monograma. Un estilo clásico y refinado que se siente premium sin esfuerzo."},
+  {id:6, name:"Caps Deluxe Cross Suede", price:70000, type:"best", label:"MÁS VENDIDA", img:"caps6.jpeg",
+   desc:"Acabado tipo gamuza con detalle de cruz. Una textura distinta para quien busca algo fuera de lo común."}
 ];
 
 let cart = JSON.parse(localStorage.getItem("capsDeluxeCart") || "[]");
@@ -430,19 +491,19 @@ function renderProducts(){
 
   box.innerHTML=list.map(p=>`
     <article class="product">
-      <div class="product-img">
+      <div class="product-img" onclick="openProduct(${p.id})">
         <span class="badge">${p.label}</span>
-        <button class="heart" onclick="toggleFav(this)" aria-label="Favorito">♡</button>
-        <img src="${p.img}" alt="${p.name}">
+        <button class="heart" onclick="event.stopPropagation();toggleFav(this)" aria-label="Favorito">♡</button>
+        <img src="${p.img}" alt="${p.name}"><span class="quick">VER DETALLE</span>
       </div>
       <div class="product-info">
         <div class="product-cat">CAPS DELUXE</div>
-        <h3>${p.name}</h3>
+        <h3><button class="name-link" onclick="openProduct(${p.id})">${p.name}</button></h3>
         <div class="stars">★★★★★</div>
         <div class="price">${money(p.price)}</div>
         <div class="product-actions">
           <button class="add" onclick="addToCart(${p.id})">AGREGAR AL CARRITO</button>
-          <button class="view" onclick="addToCart(${p.id})" title="Agregar">+</button>
+          <button class="view" onclick="openProduct(${p.id})" title="Ver detalle" aria-label="Ver detalle de ${p.name}">⤢</button>
         </div>
       </div>
     </article>`).join("");
@@ -512,21 +573,16 @@ function removeItem(id){cart=cart.filter(x=>x.id!==id);saveCart()}
 function openCart(){document.getElementById("cart").classList.add("open");document.getElementById("overlay").classList.add("open")}
 function closeCart(){document.getElementById("cart").classList.remove("open");document.getElementById("overlay").classList.remove("open")}
 
-async function sha256Hex(text){
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-
-// Firma de integridad: SHA256(referencia + montoEnCentavos + moneda + secretoIntegridad)
-async function getIntegritySignature(reference, amountInCents){
-  if(SIGNATURE_ENDPOINT){
-    const r=await fetch(SIGNATURE_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({reference,amountInCents,currency:CURRENCY})});
-    if(!r.ok) throw new Error("No se pudo firmar la transacción");
-    return (await r.json()).signature;
-  }
-  if(WOMPI_INTEGRITY_SECRET.includes("PEGA_AQUI")) throw new Error("Falta el secreto de integridad de Wompi");
-  return sha256Hex(`${reference}${amountInCents}${CURRENCY}${WOMPI_INTEGRITY_SECRET}`);
+// El servidor calcula el monto con los precios reales y firma la transacción; el navegador nunca ve el secreto.
+async function getIntegritySignature(reference, items){
+  if(!SIGNATURE_ENDPOINT || SIGNATURE_ENDPOINT.includes("TU-PROYECTO")) throw new Error("Falta configurar SIGNATURE_ENDPOINT");
+  const r = await fetch(SIGNATURE_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({reference, items:items.map(i=>({id:i.id, qty:i.qty}))})
+  });
+  if(!r.ok) throw new Error("No se pudo firmar la transacción");
+  return r.json(); // {signature, amountInCents}
 }
 
 function getCustomerData(){
@@ -642,7 +698,9 @@ async function proceedToPayment(){
   btn.textContent = "ABRIENDO PAGO...";
 
   try{
-    const integrity = await getIntegritySignature(reference, amountInCents);
+    const signed = await getIntegritySignature(reference, cart);
+    if(signed.amountInCents !== amountInCents) throw new Error("El total no coincide con el del servidor. Recarga la página.");
+    const integrity = signed.signature;
 
     const config = {
       currency: CURRENCY,
@@ -702,6 +760,43 @@ async function proceedToPayment(){
     btn.textContent = "PAGAR SEGURO EN LÍNEA →";
   }
 }
+
+let pmIndex=0;
+const pmEl=document.getElementById("pmBackdrop");
+const pmImg=document.getElementById("pmImg");
+function openProduct(id){
+  pmIndex=products.findIndex(p=>p.id===id);
+  fillProduct();
+  pmEl.classList.add("open");
+  document.body.style.overflow="hidden";
+  document.getElementById("pmClose").focus();
+}
+function closeProduct(){pmEl.classList.remove("open");document.body.style.overflow=""}
+function stepProduct(d){pmIndex=(pmIndex+d+products.length)%products.length;fillProduct()}
+function fillProduct(){
+  const p=products[pmIndex];
+  pmImg.src=p.img;pmImg.alt=p.name;pmImg.classList.remove("zoom");pmImg.style.transformOrigin="50% 50%";
+  document.getElementById("pmBadge").textContent=p.label;
+  document.getElementById("pmName").textContent=p.name;
+  document.getElementById("pmPrice").textContent=money(p.price);
+  document.getElementById("pmDesc").textContent=p.desc;
+  document.getElementById("pmCount").textContent=(pmIndex+1)+" / "+products.length;
+  document.getElementById("pmAdd").onclick=()=>addToCart(p.id);
+  document.getElementById("pmWa").href="https://wa.me/573052466463?text="+encodeURIComponent("Hola Caps Deluxe, me interesa la gorra "+p.name+".");
+}
+pmImg.addEventListener("click",()=>pmImg.classList.toggle("zoom"));
+pmImg.addEventListener("mousemove",e=>{
+  if(!pmImg.classList.contains("zoom"))return;
+  const r=pmImg.getBoundingClientRect();
+  pmImg.style.transformOrigin=((e.clientX-r.left)/r.width*100)+"% "+((e.clientY-r.top)/r.height*100)+"%";
+});
+document.addEventListener("keydown",e=>{
+  if(!pmEl.classList.contains("open"))return;
+  if(e.key==="Escape")closeProduct();
+  if(e.key==="ArrowLeft")stepProduct(-1);
+  if(e.key==="ArrowRight")stepProduct(1);
+});
+document.querySelectorAll(".nav-links a").forEach(a=>a.addEventListener("click",()=>document.querySelector(".nav-links").classList.remove("mobile-open")));
 
 function toggleFav(btn){btn.classList.toggle("active");btn.textContent=btn.classList.contains("active")?"♥":"♡"}
 
